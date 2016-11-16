@@ -4,7 +4,7 @@ var ReactDOM = require('react-dom');
 // stylistic components
 function Main() {
   return (
-    <div className="container">
+    <div className="main">
       <Title text={'Camper Leaderboard'} />
       <App />
       <Footer />
@@ -23,13 +23,70 @@ function Footer() {
 
 // App starts here
 class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      'list': [], 
+      'recent': true
+    };
+  }
+
+  // TODO: get JSON array from API, and set state to the array
+  switchBoard(bool) {
+    
+  }
+
   render() {
+  	const topTitle = {'username': 'Camper Name', };
     return (
       <div className="site-content">
-        Hello world!
+        <TitleRow />
+        {this.state.list.map(function(listvalue, index){
+          return <Row data={listvalue} index={index} />
+        })}
       </div>
     )
   }
+}
+
+// TitleRow generator
+function TitleRow() {
+  
+}
+
+// Row generator
+function Row(props) {
+  const tempObj = props.data;
+  const camper = tempObj['username'];
+  const portrait = tempObj['img'];
+  const recent = tempObj['recent'];
+  const alltime = tempObj['alltime']
+  
+  return (
+    <div className="table-row">
+      <div className="serial-number">{props.index}</div>
+      <Column data={camper} portrait={portrait} />
+      <Column data={recent} />
+      <Column data={alltime} />
+    </div>
+  );
+}
+
+// Column generator
+function Column(props) {
+  if ('portrait' in props) {
+    return (
+      <div className="table-column">
+        <img src={portrait} className="table-portrait" />
+        {props.data}
+      </div>
+    )
+  }
+  return (
+    <div className="table-column">
+      {props.data}
+    </div>
+  )
 }
 
 

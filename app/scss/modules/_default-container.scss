@@ -1,0 +1,14 @@
+// _default-container.scss
+// for general layouts not using bootstrap's container
+
+.main {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1500px;
+}
+
+.site-content {
+  flex: 1;
+}
