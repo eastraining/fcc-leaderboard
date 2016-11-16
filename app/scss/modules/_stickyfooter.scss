@@ -1,0 +1,12 @@
+// _stickyfooter.scss
+// sticky footer
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
+}

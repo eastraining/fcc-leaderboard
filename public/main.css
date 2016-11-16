@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; }
+
+.site-content {
+  flex: 1; }
+
+.title {
+  margin: 2% 0 2% 0; }
+
+footer {
+  margin-bottom: 2%; }
+
+/*# sourceMappingURL=main.css.map */

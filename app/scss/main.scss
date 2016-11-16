@@ -1,0 +1,13 @@
+// main.scss
+
+@import 'modules/stickyfooter';
+
+$nice-margin: 2%;
+
+.title {
+  margin: $nice-margin 0 $nice-margin 0;
+}
+
+footer {
+  margin-bottom: $nice-margin;
+}
