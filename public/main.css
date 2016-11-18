@@ -1,10 +1,38 @@
-.container {
+.main {
   display: flex;
   min-height: 100vh;
   flex-direction: column; }
 
 .site-content {
   flex: 1; }
+
+.table-row {
+  display: flex;
+  height: 5rem; }
+
+.serial-number {
+  width: 4%;
+  border: 1.5px solid #fff;
+  background-color: #d3d3d3;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.table-column {
+  width: 32%;
+  border: 1.5px solid #fff;
+  background-color: #d3d3d3;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.name-column {
+  justify-content: flex-start; }
+
+.table-portrait {
+  height: 4rem;
+  width: 4rem;
+  margin: 0 1rem 0 1rem; }
 
 .title {
   margin: 2% 0 2% 0; }

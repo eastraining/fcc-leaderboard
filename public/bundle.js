@@ -57,11 +57,14 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
 
+	// used links
+	var fccAPI = 'https://fcctop100.herokuapp.com/api/fccusers/top/';
+
 	// stylistic components
 	function Main() {
 	  return React.createElement(
 	    'div',
-	    { className: 'container' },
+	    { className: 'main container' },
 	    React.createElement(Title, { text: 'Camper Leaderboard' }),
 	    React.createElement(App, null),
 	    React.createElement(Footer, null)
@@ -92,16 +95,55 @@
 	  function App() {
 	    _classCallCheck(this, App);
 
-	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+
+	    _this.state = {
+	      'list': [],
+	      'category': 'recent'
+	    };
+
+	    _this.getJSON = _this.getJSON.bind(_this);
+	    _this.componentDidMount = _this.componentDidMount.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(App, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.getJSON(this.state.category, this);
+	    }
+
+	    // get JSON array from API, and set state to the array
+
+	  }, {
+	    key: 'getJSON',
+	    value: function getJSON(category, object) {
+	      var request = new XMLHttpRequest();
+	      request.open('GET', fccAPI + category, true);
+	      request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+	      request.onreadystatechange = function () {
+	        if (request.readyState === 4 && request.status === 200) {
+	          object.setState({ 'list': JSON.parse(request.responseText) });
+	        } else if (request.readyState === 4 && request.status !== 200) {
+	          alert('error: JSON API call failed.');
+	        }
+	      };
+	      request.send();
+	    }
+
+	    // TODO: handling change of category
+
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var topTitle = { 'username': 'Camper Name' };
 	      return React.createElement(
 	        'div',
 	        { className: 'site-content' },
-	        'Hello world!'
+	        React.createElement(TitleRow, null),
+	        this.state.list.map(function (listvalue, index) {
+	          return React.createElement(Row, { data: listvalue, key: index, index: index });
+	        })
 	      );
 	    }
 	  }]);
@@ -109,9 +151,65 @@
 	  return App;
 	}(React.Component);
 
+	// TitleRow generator
+
+
+	function TitleRow() {
+	  return React.createElement(
+	    'div',
+	    { className: 'table-row' },
+	    React.createElement(
+	      'div',
+	      { className: 'serial-number' },
+	      '#'
+	    ),
+	    React.createElement(Column, { data: 'Camper Name' }),
+	    React.createElement(Column, { data: 'Past 30 Days' }),
+	    React.createElement(Column, { data: 'All Time' })
+	  );
+	}
+
+	// Row generator
+	function Row(props) {
+	  var tempObj = props.data;
+	  var camper = tempObj['username'];
+	  var portrait = tempObj['img'];
+	  var recent = tempObj['recent'];
+	  var alltime = tempObj['alltime'];
+	  var index = props.index + 1;
+
+	  return React.createElement(
+	    'div',
+	    { className: 'table-row' },
+	    React.createElement(
+	      'div',
+	      { className: 'serial-number' },
+	      index
+	    ),
+	    React.createElement(Column, { data: camper, portrait: portrait }),
+	    React.createElement(Column, { data: recent }),
+	    React.createElement(Column, { data: alltime })
+	  );
+	}
+
+	// Column generator
+	function Column(props) {
+	  if ('portrait' in props) {
+	    return React.createElement(
+	      'div',
+	      { className: 'table-column name-column' },
+	      React.createElement('img', { src: props.portrait, className: 'table-portrait' }),
+	      props.data
+	    );
+	  }
+	  return React.createElement(
+	    'div',
+	    { className: 'table-column' },
+	    props.data
+	  );
+	}
+
 	// render App
-
-
 	ReactDOM.render(React.createElement(Main, null), document.getElementById('app'));
 
 /***/ },

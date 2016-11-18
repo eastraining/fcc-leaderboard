@@ -1,10 +1,13 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+// used links
+const fccAPI = 'https://fcctop100.herokuapp.com/api/fccusers/top/'
+
 // stylistic components
 function Main() {
   return (
-    <div className="main">
+    <div className="main container">
       <Title text={'Camper Leaderboard'} />
       <App />
       <Footer />
@@ -27,14 +30,33 @@ class App extends React.Component {
     super();
     this.state = {
       'list': [], 
-      'recent': true
+      'category': 'recent'
     };
+
+    this.getJSON = this.getJSON.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+  }
+  componentDidMount() {
+    this.getJSON(this.state.category, this);
   }
 
-  // TODO: get JSON array from API, and set state to the array
-  switchBoard(bool) {
-    
+  // get JSON array from API, and set state to the array
+  getJSON(category, object) {
+    var request = new XMLHttpRequest();
+    request.open('GET', fccAPI + category, true);
+    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    request.onreadystatechange = function() {
+      if (request.readyState === 4 && request.status === 200) {
+        object.setState({'list': JSON.parse(request.responseText)});
+      }
+      else if (request.readyState === 4 && request.status !== 200) {
+        alert('error: JSON API call failed.');
+      }
+    };
+    request.send();
   }
+
+  // TODO: handling change of category
 
   render() {
   	const topTitle = {'username': 'Camper Name', };
@@ -42,7 +64,7 @@ class App extends React.Component {
       <div className="site-content">
         <TitleRow />
         {this.state.list.map(function(listvalue, index){
-          return <Row data={listvalue} index={index} />
+          return <Row data={listvalue} key={index} index={index} />
         })}
       </div>
     )
@@ -51,7 +73,14 @@ class App extends React.Component {
 
 // TitleRow generator
 function TitleRow() {
-  
+  return (
+    <div className="table-row">
+      <div className="serial-number">#</div>
+      <Column data={'Camper Name'} />
+      <Column data={'Past 30 Days'} />
+      <Column data={'All Time'} />
+    </div>
+  )
 }
 
 // Row generator
@@ -60,11 +89,12 @@ function Row(props) {
   const camper = tempObj['username'];
   const portrait = tempObj['img'];
   const recent = tempObj['recent'];
-  const alltime = tempObj['alltime']
+  const alltime = tempObj['alltime'];
+  const index = props.index + 1;
   
   return (
     <div className="table-row">
-      <div className="serial-number">{props.index}</div>
+      <div className="serial-number">{index}</div>
       <Column data={camper} portrait={portrait} />
       <Column data={recent} />
       <Column data={alltime} />
@@ -76,8 +106,8 @@ function Row(props) {
 function Column(props) {
   if ('portrait' in props) {
     return (
-      <div className="table-column">
-        <img src={portrait} className="table-portrait" />
+      <div className="table-column name-column">
+        <img src={props.portrait} className="table-portrait" />
         {props.data}
       </div>
     )

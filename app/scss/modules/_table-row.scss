@@ -1,6 +1,40 @@
 // _table-row.scss
 // for styling table rows
+$table-height: 5rem;
+$portrait-height: 4rem;
+$portrait-margin: 0 1rem 0 1rem;
+$border: 1.5px solid #fff;
+$background: #d3d3d3;
 
 .table-row {
   display: flex;
+  height: $table-height;
+}
+
+.serial-number {
+  width: 4%;
+  border: $border;
+  background-color: $background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-column {
+  width: 32%;
+  border: $border;
+  background-color: $background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name-column {
+  justify-content: flex-start;
+}
+
+.table-portrait {
+  height: $portrait-height;
+  width: $portrait-height;
+  margin: $portrait-margin;
 }
