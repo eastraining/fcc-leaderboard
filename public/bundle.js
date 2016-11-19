@@ -104,13 +104,16 @@
 
 	    _this.getJSON = _this.getJSON.bind(_this);
 	    _this.componentDidMount = _this.componentDidMount.bind(_this);
+	    _this.handleSwitch = _this.handleSwitch.bind(_this);
+	    _this.handleRecent = _this.handleRecent.bind(_this);
+	    _this.handleAlltime = _this.handleAlltime.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(App, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.getJSON(this.state.category, this);
+	      this.handleSwitch(this.state.category);
 	    }
 
 	    // get JSON array from API, and set state to the array
@@ -131,8 +134,31 @@
 	      request.send();
 	    }
 
-	    // TODO: handling change of category
+	    // gets JSON request
 
+	  }, {
+	    key: 'handleSwitch',
+	    value: function handleSwitch(category) {
+	      this.getJSON(category, this);
+	    }
+	    // handle switch to recent and vice versa
+
+	  }, {
+	    key: 'handleRecent',
+	    value: function handleRecent() {
+	      if (this.state.category == 'alltime') {
+	        this.setState({ 'category': 'recent' });
+	        this.handleSwitch('recent');
+	      }
+	    }
+	  }, {
+	    key: 'handleAlltime',
+	    value: function handleAlltime() {
+	      if (this.state.category == 'recent') {
+	        this.setState({ 'category': 'alltime' });
+	        this.handleSwitch('alltime');
+	      }
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -140,7 +166,7 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'site-content' },
-	        React.createElement(TitleRow, null),
+	        React.createElement(TitleRow, { handleRecent: this.handleRecent, handleAlltime: this.handleAlltime }),
 	        this.state.list.map(function (listvalue, index) {
 	          return React.createElement(Row, { data: listvalue, key: index, index: index });
 	        })
@@ -154,7 +180,7 @@
 	// TitleRow generator
 
 
-	function TitleRow() {
+	function TitleRow(props) {
 	  return React.createElement(
 	    'div',
 	    { className: 'table-row' },
@@ -164,8 +190,8 @@
 	      '#'
 	    ),
 	    React.createElement(Column, { data: 'Camper Name' }),
-	    React.createElement(Column, { data: 'Past 30 Days' }),
-	    React.createElement(Column, { data: 'All Time' })
+	    React.createElement(Column, { data: 'Past 30 Days', onClick: props.handleRecent }),
+	    React.createElement(Column, { data: 'All Time', onClick: props.handleAlltime })
 	  );
 	}
 
@@ -199,6 +225,13 @@
 	      'div',
 	      { className: 'table-column name-column' },
 	      React.createElement('img', { src: props.portrait, className: 'table-portrait' }),
+	      props.data
+	    );
+	  }
+	  if ('onClick' in props) {
+	    return React.createElement(
+	      'div',
+	      { className: 'table-column', onClick: props.onClick },
 	      props.data
 	    );
 	  }

@@ -35,9 +35,12 @@ class App extends React.Component {
 
     this.getJSON = this.getJSON.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleSwitch = this.handleSwitch.bind(this);
+    this.handleRecent = this.handleRecent.bind(this);
+    this.handleAlltime = this.handleAlltime.bind(this);
   }
   componentDidMount() {
-    this.getJSON(this.state.category, this);
+    this.handleSwitch(this.state.category);
   }
 
   // get JSON array from API, and set state to the array
@@ -56,13 +59,29 @@ class App extends React.Component {
     request.send();
   }
 
-  // TODO: handling change of category
+  // gets JSON request
+  handleSwitch(category) {
+    this.getJSON(category, this);
+  }
+  // handle switch to recent and vice versa
+  handleRecent() {
+    if (this.state.category == 'alltime') {
+      this.setState({'category': 'recent'});
+      this.handleSwitch('recent');
+    }
+  }
+  handleAlltime() {
+    if (this.state.category == 'recent') {
+      this.setState({'category': 'alltime'});
+      this.handleSwitch('alltime');
+    }
+  }
 
   render() {
   	const topTitle = {'username': 'Camper Name', };
     return (
       <div className="site-content">
-        <TitleRow />
+        <TitleRow handleRecent={this.handleRecent} handleAlltime={this.handleAlltime} />
         {this.state.list.map(function(listvalue, index){
           return <Row data={listvalue} key={index} index={index} />
         })}
@@ -72,13 +91,13 @@ class App extends React.Component {
 }
 
 // TitleRow generator
-function TitleRow() {
+function TitleRow(props) {
   return (
     <div className="table-row">
       <div className="serial-number">#</div>
       <Column data={'Camper Name'} />
-      <Column data={'Past 30 Days'} />
-      <Column data={'All Time'} />
+      <Column data={'Past 30 Days'} onClick={props.handleRecent} />
+      <Column data={'All Time'} onClick={props.handleAlltime} />
     </div>
   )
 }
@@ -108,6 +127,13 @@ function Column(props) {
     return (
       <div className="table-column name-column">
         <img src={props.portrait} className="table-portrait" />
+        {props.data}
+      </div>
+    )
+  }
+  if ('onClick' in props) {
+    return (
+      <div className="table-column" onClick={props.onClick}>
         {props.data}
       </div>
     )
